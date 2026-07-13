@@ -64,41 +64,68 @@ function initScrollHandler() {
   function processScroll() {
     const scrollY = window.pageYOffset;
     
-    // Asymmetric Cinematic Parallax Animations
+    // Experimental Editorial Parallax Animations
+    const heroBg = document.getElementById('heroBg');
+    const heroTitleWrap = document.getElementById('heroTitleWrap');
+    const heroProjCard = document.getElementById('heroProjCard');
     const archBorder = document.getElementById('archBorder');
     const archImg = document.getElementById('archImg');
     const floatProjectBadge = document.getElementById('floatProjectBadge');
-    const heroContentCol = document.getElementById('heroContentCol');
+    
+    const editorialBorder = document.querySelector('.editorial-frame-border');
+    const editorialImg = document.querySelector('.editorial-img-photo');
     const heroHeight = window.innerHeight;
 
     if (scrollY < heroHeight + 100) {
-      // 1. Text column slides up and fades out
-      if (heroContentCol) {
-        const textY = scrollY * 0.28;
-        const textOpacity = Math.max(0, 1 - (scrollY * 0.0022));
-        heroContentCol.style.transform = `translate3d(0, ${textY}px, 0)`;
-        heroContentCol.style.opacity = textOpacity;
+      // 1. Background image zooms in slowly
+      if (heroBg) {
+        const bgScale = 1 + (scrollY * 0.00025);
+        heroBg.style.transform = `scale(${bgScale}) translate3d(0, 0, 0)`;
       }
 
-      // 2. Gold architectural border slides slower and rotates slightly
+      // 2. Title block slides up and fades out
+      if (heroTitleWrap) {
+        const titleY = scrollY * 0.32;
+        const titleOpacity = Math.max(0, 1 - (scrollY * 0.0022));
+        heroTitleWrap.style.transform = `translate3d(0, ${titleY}px, 0)`;
+        heroTitleWrap.style.opacity = titleOpacity;
+      }
+
+      // 3. Floating project card slides right and down
+      if (heroProjCard) {
+        const cardX = scrollY * 0.12;
+        const cardY = scrollY * 0.16;
+        heroProjCard.style.transform = `translate3d(${cardX}px, ${cardY}px, 0)`;
+      }
+
+      // Legacy support for other pages if needed
       if (archBorder) {
         const borderY = scrollY * 0.12;
         const borderRot = scrollY * 0.012;
         archBorder.style.transform = `translate3d(0, ${borderY}px, 0) rotate(${borderRot}deg)`;
       }
-
-      // 3. Image scales and translates inside frame (camera movement)
       if (archImg) {
         const imgScale = 1 + (scrollY * 0.0002);
         const imgY = scrollY * 0.06;
         archImg.style.transform = `scale(${imgScale}) translate3d(0, ${imgY}px, 0)`;
       }
-
-      // 4. Floating Project Badge slides to the side slightly
       if (floatProjectBadge) {
         const badgeX = scrollY * 0.12;
         const badgeY = scrollY * 0.18;
         floatProjectBadge.style.transform = `translate3d(${badgeX}px, ${badgeY}px, 0)`;
+      }
+    }
+
+    // 4. Overlapping editorial images parallax (about section)
+    if (editorialBorder && editorialImg) {
+      const parentRect = editorialImg.getBoundingClientRect();
+      if (parentRect.top < window.innerHeight && parentRect.bottom > 0) {
+        const elementVisibleOffset = window.innerHeight - parentRect.top;
+        const borderY = elementVisibleOffset * 0.05;
+        const imgScale = 1 + (elementVisibleOffset * 0.00008);
+        
+        editorialBorder.style.transform = `translate3d(0, ${borderY}px, 0)`;
+        editorialImg.style.transform = `scale(${imgScale})`;
       }
     }
 
