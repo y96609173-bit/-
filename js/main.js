@@ -350,7 +350,7 @@ function initBrandsFilter() {
 
       cards.forEach(card => {
         const cat = card.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
+        if (filter === 'all' || (cat && cat.split(' ').includes(filter))) {
           card.classList.remove('hide');
           card.style.animation = 'none';
           card.offsetHeight; // Trigger reflow
